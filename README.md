@@ -1,4 +1,5 @@
-# 🚖 GrabWeb - Campus Ride Booking System
+# 🚖 GrabWeb UiTM - Campus Ride Booking System
+![Landing Page](./images/homepage.png)
 
 **GrabWeb** is a simplified ride-hailing web application prototype designed specifically for university campuses. Built in collaboration with **UiTM** and **Grab**, it aims to provide a safe, affordable, and convenient transport solution for students and staff within the campus grounds.
 
@@ -44,22 +45,7 @@ GrabWeb addresses the transportation challenges faced by students and staff insi
 * **System Management:** Tools to manage users and view reports.
 
 ---
-
-## 📸 Screenshots
-
-*(You can replace these image links with your own screenshots later)*
-
-| Landing Page | Login Page |
-|:---:|:---:|
-| ![Landing Page](./images/screenshot-landing.png) | ![Login Page](./images/screenshot-login.png) |
-| *Home page with Search Widget* | *Role-based Login (Customer/Driver/Admin)* |
-
-| Admin Dashboard | User Profile |
-|:---:|:---:|
-| ![Admin Dashboard](./images/screenshot-admin.png) | ![User Profile](./images/screenshot-user.png) |
-| *System overview and stats* | *Logged-in view with dropdown menu* |
-
----
+![Landing Page](./images/admindashboard.png)
 
 ## 📂 Project Structure
 
@@ -74,4 +60,5 @@ GrabWeb/
 ├── README.md            # Documentation
 └── images/              # Assets (Logos, Icons, etc.)
     ├── grab-logo.png
+
     └── uitm-logo.png
