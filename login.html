@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grab - Login / Sign Up</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="color: var(--primary-color); margin:0; font-size: 28px;">
+                    <i class="fa-solid fa-location-dot"></i> GrabWeb
+                </h2>
+                <p style="color:#888; font-size: 0.9rem;">Campus Ride Solution</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <form id="login-form">
+                
+                <div class="role-selector">
+                    <label>Select Role:</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="login_role" value="customer" checked> Customer
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="login_role" value="driver"> Driver
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="login_role" value="admin"> Admin
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" class="form-control" placeholder="Enter Username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" class="form-control" placeholder="Enter Password" required>
+                    </div>
+                </div>
+                
+                <button class="btn-primary">Log In <i class="fa-solid fa-arrow-right"></i></button>
+                
+                <div style="text-align:center; margin-top:15px;">
+                    <a href="#" class="link">Forgot your password?</a>
+                </div>
+            </form>
+
+            <form id="signup-form" class="hidden">
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" class="form-control" placeholder="Enter Full Name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" class="form-control" placeholder="Create Username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" class="form-control" placeholder="Enter Email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Register As</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-users"></i>
+                        <select id="signup-role" class="form-control" style="background: white;">
+                            <option value="" disabled selected>Select Role...</option>
+                            <option value="customer">Student / Staff (Customer)</option>
+                            <option value="driver">Driver</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" class="form-control" placeholder="Create Password" required>
+                    </div>
+                </div>
+
+                <button class="btn-primary">Sign Up <i class="fa-solid fa-user-plus"></i></button>
+            </form>
+
+            <a style="text-align:center; margin-top:15px;" href="index.html" class="back-home">← Back to Homepage</a>
+        </div>
+    </div>
+
+    <script>
+        // 1. Tab Switching Logic (Keep this)
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // 2. LOGIN FORM SUBMIT LOGIC
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop the page from reloading
+            
+            // Get the value of the selected radio button
+            const selectedRole = document.querySelector('input[name="login_role"]:checked').value;
+            
+            // Show a temporary alert for demonstration
+            alert(`Logging in as ${selectedRole.toUpperCase()}...`);
+            
+            // Redirect logic based on role
+            if (selectedRole === 'admin') {
+                window.location.href = "admin_dashboard.html"; // Redirect to the dashboard we just made
+            } else if (selectedRole === 'driver') {
+                // Since we don't have a driver_dashboard.html yet, send to home
+                window.location.href = "index.html"; 
+            } else {
+                // Customer goes to home page
+                window.location.href = "index2.html"; 
+            }
+        });
+
+        // 3. SIGN UP FORM SUBMIT LOGIC
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page reload
+            
+            // Get the value from the dropdown (Make sure you added id="signup-role" in HTML)
+            const roleSelect = document.getElementById('signup-role');
+            const role = roleSelect ? roleSelect.value : "User"; // Fallback if ID is missing
+
+            if(role === "") {
+                alert("Please select a role!");
+                return;
+            }
+
+            alert(`Account created successfully as ${role.toUpperCase()}! Please log in.`);
+            
+            // Automatically switch back to the Login tab
+            switchTab('login');
+        });
+    </script>
+</body>
+</html>
