@@ -52,13 +52,16 @@ GrabWeb addresses the transportation challenges faced by students and staff insi
 ```bash
 GrabWeb/
 ├── index.html           # Public Landing Page (Logout view)
-├── index2.php          # Customer Dashboard (Logged-in view)
-├── login.php           # Authentication (Login/Sign Up)
+├── index2.php           # Customer Dashboard (Logged-in view)
+    └── logout.php       # logout script
+├── login.php            # Authentication (Login/Sign Up)
+    └── signup.php       # Sign up controller
 ├── admin_dashboard.html # Admin Control Panel
 ├── help.html            # Help Center & FAQ
 ├── style.css            # Global Stylesheet
 ├── README.md            # Documentation
-└── images/              # Assets (Logos, Icons, etc.)
+├── images/              # Assets (Logos, Icons, etc.)
     ├── grab-logo.png
 
     └── uitm-logo.png
+└── grabdb.sql           # Database for the project
