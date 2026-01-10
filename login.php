@@ -27,11 +27,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 4. Redirect based on role
             if ($row['accountType'] == 'admin') {
-                header("Location: admin_dashboard.html");
+                header("Location: admin_dashboard.php");
             } elseif ($row['accountType'] == 'driver') {
                 header("Location: index.html"); // Replace with driver dashboard if you have one
             } else {
-                header("Location: index2.php"); // Customer dashboard
+                header("Location: customer_dashboard.php"); // Customer dashboard
             }
             exit();
         } else {

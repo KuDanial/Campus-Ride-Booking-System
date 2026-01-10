@@ -52,11 +52,12 @@ GrabWeb addresses the transportation challenges faced by students and staff insi
 ```bash
 GrabWeb/
 ├── index.html           # Public Landing Page (Logout view)
-├── index2.php           # Customer Dashboard (Logged-in view)
+├── customer_dashboard.php           # Customer Dashboard (Logged-in view)
     └── logout.php       # logout script
 ├── login.php            # Authentication (Login/Sign Up)
     └── signup.php       # Sign up controller
-├── admin_dashboard.html # Admin Control Panel
+├── admin_dashboard.php  # Admin Control Panel
+    └── admin_manage.php # Add new admin
 ├── help.html            # Help Center & FAQ
 ├── style.css            # Global Stylesheet
 ├── README.md            # Documentation

@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include "db_conn.php";
@@ -21,7 +20,7 @@ $result = $stmt->get_result();
 
 if ($row = $result->fetch_assoc()) {
     $fullName = $row['custName'];
-    // Extract first name for the "Where to today, Danial?" part
+    // Extract first name
     $firstName = explode(' ', trim($fullName))[0];
 }
 ?>
@@ -42,7 +41,7 @@ if ($row = $result->fetch_assoc()) {
         <div class="nav-container">
             
             <div class="logo">
-                <a href="index2.html" style="color:white; text-decoration:none; display: flex; align-items: center; gap: 10px;">
+                <a href="customer_dashboard.php" style="color:white; text-decoration:none; display: flex; align-items: center; gap: 10px;">
                     <i class="fa-solid fa-location-dot"></i> 
                     
                     <span style="font-weight: 800; letter-spacing: 1px;">GrabWeb</span>
@@ -75,7 +74,7 @@ if ($row = $result->fetch_assoc()) {
                             <span style="font-size: 12px; color: #888;">Signed in as</span><br>
                             <strong><?php echo ucfirst($_SESSION['role']); ?></strong>
                         </div>
-                        <a href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+                        <a href="customer_profile.php"><i class="fa-solid fa-user"></i> My Profile</a>
                         <a href="#"><i class="fa-solid fa-wallet"></i> Payment Method</a>
                         <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> Ride History</a>
                         <div class="divider"></div>

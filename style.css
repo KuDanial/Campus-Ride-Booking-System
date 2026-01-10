@@ -8,6 +8,10 @@
     --bg-light: #f0f0f0;
     --white: #ffffff;
     --border-color: #ccc;
+    --grab-green: #02B150;
+    --text-main: #363A45;
+    --text-muted: #888;
+    --grab-dark: #363A45;
 }
 
 * {
@@ -1013,4 +1017,283 @@ table td {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   13. USER PROFILE (Logged In)
+   ========================================= 
+*/
+
+.profile-wrapper {
+    max-width: 800px;
+    margin: 100px auto 40px auto; /* Margin to clear the fixed navbar */
+    padding: 0 20px;
+}
+
+.profile-header-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.section-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-color);
+}
+
+.booking-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.trip-price {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.user-main {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Spacing between avatar and text */
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.user-info h1 {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.user-info p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-profile-btn {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background: #e8e8e8;
+}
+
+.trip-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.trip-info b {
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.trip-date {
+    font-size: 12px;
+    color: #888;
+}
+
+.summary-text {
+    line-height: 1.6;
+    color: #444;
+    font-size: 15px;
+}
+
+/* =========================================
+   14. PROFILE & EDIT PROFILE PAGES
+   ========================================= */
+
+/* Main Containers */
+.profile-wrapper, .edit-wrapper {
+    max-width: 800px;
+    margin: 100px auto 40px auto; /* Clears fixed navbar */
+    padding: 0 20px;
+}
+
+.edit-wrapper {
+    max-width: 600px; /* Edit card is slightly narrower */
+}
+
+/* Card Styling */
+.profile-header-card, .section-card, .edit-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* Profile Header Specifics */
+.profile-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-main {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.profile-pic, .profile-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.user-info h1 {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.user-info p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Edit Page Upload Area */
+.profile-upload-area {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px;
+}
+
+.camera-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--primary-color);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Buttons */
+.edit-profile-btn {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background: #e8e8e8;
+}
+
+.btn-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Section Cards & Bookings */
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-color);
+}
+
+.summary-text {
+    line-height: 1.6;
+    color: #444;
+    font-size: 15px;
+}
+
+.booking-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.booking-item:last-child {
+    border-bottom: none;
+}
+
+.trip-info b {
+    display: block;
+    font-size: 15px;
+    color: var(--text-dark);
+}
+
+.trip-date {
+    font-size: 12px;
+    color: #888;
+}
+
+.trip-price {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+/* Success Alerts */
+.success-alert {
+    background: #eafff2;
+    color: var(--primary-color);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border: 1px solid var(--primary-color);
 }

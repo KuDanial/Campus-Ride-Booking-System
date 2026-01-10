@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Profile - Amier Zhafran</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00b14f;
+            --bg-light: #f4f7f6;
+            --text-main: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar Header */
+        .navbar {
+            background: var(--primary-color);
+            padding: 0.8rem 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .profile-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #00b14f 0%, #008f3f 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Added to keep image inside the circle */
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-header h1 { margin: 0; font-size: 24px; }
+        .profile-header p { opacity: 0.9; margin: 5px 0 0; }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-value { display: block; font-weight: 800; font-size: 18px; color: var(--text-main); }
+        .stat-label { font-size: 12px; color: #888; text-transform: uppercase; }
+
+        .details-section { padding: 25px; }
+        
+        .info-group { margin-bottom: 20px; }
+        .info-group label { 
+            display: block; 
+            font-size: 12px; 
+            color: #aaa; 
+            text-transform: uppercase; 
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .info-group p { 
+            margin: 0; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .car-preview {
+            background: #f4f7f6;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .car-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .action-area {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .confirm-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .confirm-btn:hover { transform: scale(1.02); }
+        
+        .price-tag {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <i class="fa-solid fa-location-dot"></i> 
+                <span style="font-weight: 800; color:white; margin-left:10px;">GrabWeb</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <a href="results.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Drivers</a>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-img">
+                    <img src="images/charles.png" 
+                         alt="Amier Zhafran" 
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <h1>Amier Zhafran</h1>
+                <p>UiTM Student Driver</p>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-value">4.9 <i class="fa-solid fa-star" style="color: #ffa000;"></i></span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">152</span>
+                    <span class="stat-label">Trips</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">2 yrs</span>
+                    <span class="stat-label">Exp</span>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <div class="info-group">
+                    <label>Vehicle Details</label>
+                    <div class="car-preview">
+                        <i class="fa-solid fa-car-side car-icon"></i>
+                        <div>
+                            <p>Perodua Myvi (Grey)</p>
+                            <span style="font-size: 13px; color: #666;">Plate: VBT 2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <label>Preferences</label>
+                    <p><i class="fa-solid fa-snowflake" style="color: #00acee;"></i> Fully Air-Conditioned</p>
+                    <p style="margin-top: 8px;"><i class="fa-solid fa-ban" style="color: #e74c3c;"></i> No Smoking</p>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 0;">
+
+            <div class="action-area">
+                <div class="price-tag">RM 8.00</div>
+                <button class="confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+                <p style="font-size: 12px; color: #888; margin-top: 15px;">Payment will be made via Cash or QR after the ride.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmBooking() {
+            alert("Booking Successful! Amier Zhafran is on his way to the UiTM Main Gate.");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
