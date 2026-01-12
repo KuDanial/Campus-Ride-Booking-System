@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($row['accountType'] == 'admin') {
                 header("Location: admin_dashboard.php");
             } elseif ($row['accountType'] == 'driver') {
-                header("Location: index.html"); // Replace with driver dashboard if you have one
+                header("Location: driver_dashboard.php"); // Replace with driver dashboard if you have one
             } else {
                 header("Location: customer_dashboard.php"); // Customer dashboard
             }

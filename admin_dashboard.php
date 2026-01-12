@@ -2,24 +2,27 @@
 session_start();
 include "db_conn.php";
 
-// 1. SECURITY: Ensure only admins can access this page
+// 1. SECURITY
 if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// 2. FETCH TOTAL CUSTOMERS
-$sql_cust = "SELECT COUNT(*) as total FROM customer";
-$result_cust = $conn->query($sql_cust);
-$total_customers = ($result_cust->fetch_assoc())['total'];
+// 2. FETCH TOTAL CUSTOMERS & DRIVERS (Existing)
+$total_customers = ($conn->query("SELECT COUNT(*) as total FROM customer")->fetch_assoc())['total'];
+$total_drivers = ($conn->query("SELECT COUNT(*) as total FROM driver")->fetch_assoc())['total'];
 
-// 3. FETCH TOTAL DRIVERS
-$sql_driver = "SELECT COUNT(*) as total FROM driver";
-$result_driver = $conn->query($sql_driver);
-$total_drivers = ($result_driver->fetch_assoc())['total'];
+// 3. FETCH RIDES TODAY (Dynamic)
+$sql_today = "SELECT COUNT(*) as total FROM booking WHERE DATE(bookingTimestamp) = CURDATE()";
+$rides_today = ($conn->query($sql_today)->fetch_assoc())['total'];
 
-// 4. FETCH RECENT BOOKINGS (Joining tables to get Names)
-$sql_bookings = "SELECT b.bookingID, c.custName, d.driverName, b.pickupLocation, b.dropoffLocation, b.bookingStatus 
+// 4. FETCH TOTAL EARNINGS TODAY (Dynamic)
+// Note: bookingFare is the column we added in previous steps
+$sql_earnings = "SELECT SUM(bookingFare) as total FROM booking WHERE DATE(bookingTimestamp) = CURDATE() AND bookingStatus = 'Completed'";
+$earnings_today = ($conn->query($sql_earnings)->fetch_assoc())['total'] ?? 0;
+
+// 5. FETCH RECENT BOOKINGS (Dynamic)
+$sql_bookings = "SELECT b.*, c.custName, d.driverName 
                  FROM booking b
                  LEFT JOIN customer c ON b.custID = c.custID
                  LEFT JOIN driver d ON b.driverID = d.driverID
@@ -48,13 +51,13 @@ $bookings_result = $conn->query($sql_bookings);
             
             <ul class="sidebar-menu">
                 <li><a href="#" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-car"></i> Manage Drivers</a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> Manage Customers</a></li>
-                <li><a href="#"><i class="fa-solid fa-ticket"></i> View Bookings</a></li>
+                <li><a href="admin_manage_driver.php"><i class="fa-solid fa-car"></i> Manage Drivers</a></li>
+                <li><a href="admin_manage_customer.php"><i class="fa-solid fa-users"></i> Manage Customers</a></li>
+                <li><a href="admin_manage_booking.php"><i class="fa-solid fa-ticket"></i> View Bookings</a></li>
                 
                 <li class="menu-divider">System</li>
-                <li><a href="admin_manage.php"><i class="fa-solid fa-user-shield"></i> Manage Admins <span class="badge">New</span></a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="admin_manage_admin.php"><i class="fa-solid fa-user-shield"></i> Manage Admins <span class="badge">New</span></a></li>
+                <li><a href="admin_report.php"><i class="fa-solid fa-file"></i> Reports</a></li>
             </ul>
 
             <div class="sidebar-footer">
@@ -101,7 +104,7 @@ $bookings_result = $conn->query($sql_bookings);
                         <i class="fa-solid fa-route"></i>
                     </div>
                     <div class="stat-info"> 
-                        <h3>320</h3>
+                        <h3><?php echo number_format($rides_today); ?></h3>
                         <p>Rides Today</p>
                     </div>
                 </div>
@@ -111,7 +114,7 @@ $bookings_result = $conn->query($sql_bookings);
                         <i class="fa-solid fa-wallet"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>RM 4,500</h3>
+                        <h3>RM <?php echo number_format($earnings_today, 2); ?></h3>
                         <p>Total Revenue</p>
                     </div>
                 </div>
@@ -136,30 +139,26 @@ $bookings_result = $conn->query($sql_bookings);
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#BK-2023</td>
-                                <td>Ali Ahmad</td>
-                                <td>Pak Abu</td>
-                                <td>Gate A -> Library</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>RM 5.00</td>
-                            </tr>
-                            <tr>
-                                <td>#BK-2024</td>
-                                <td>Siti Sarah</td>
-                                <td>Abang Grab</td>
-                                <td>Kolej Melati -> Mall</td>
-                                <td><span class="status pending">Searching...</span></td>
-                                <td>RM 12.00</td>
-                            </tr>
-                            <tr>
-                                <td>#BK-2025</td>
-                                <td>John Doe</td>
-                                <td>Mat Rempit</td>
-                                <td>Cafeteria -> Gate B</td>
-                                <td><span class="status cancelled">Cancelled</span></td>
-                                <td>RM 3.00</td>
-                            </tr>
+                            <tbody>
+                                <?php if ($bookings_result->num_rows > 0): ?>
+                                    <?php while($row = $bookings_result->fetch_assoc()): ?>
+                                        <tr>
+                                            <td>#BK-<?php echo $row['bookingID']; ?></td>
+                                            <td><?php echo htmlspecialchars($row['custName'] ?? 'Deleted User'); ?></td>
+                                            <td><?php echo htmlspecialchars($row['driverName'] ?? 'Searching...'); ?></td>
+                                            <td><?php echo htmlspecialchars($row['pickupLocation']); ?> -> <?php echo htmlspecialchars($row['dropoffLocation']); ?></td>
+                                            <td>
+                                                <span class="status <?php echo strtolower($row['bookingStatus']); ?>">
+                                                    <?php echo $row['bookingStatus']; ?>
+                                                </span>
+                                            </td>
+                                            <td>RM <?php echo number_format($row['bookingFare'] ?? 0, 2); ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="6" style="text-align:center;">No bookings found today.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
                         </tbody>
                     </table>
                 </div>

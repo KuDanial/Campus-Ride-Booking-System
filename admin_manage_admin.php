@@ -57,12 +57,12 @@ $result_admins = $conn->query($sql_admins);
             </div>
             <ul class="sidebar-menu">
                 <li><a href="admin_dashboard.php"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-car"></i> Manage Drivers</a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> Manage Customers</a></li>
-                <li><a href="#"><i class="fa-solid fa-ticket"></i> View Bookings</a></li>
+                <li><a href="admin_manage_driver.php"><i class="fa-solid fa-car"></i> Manage Drivers</a></li>
+                <li><a href="admin_manage_customer.php"><i class="fa-solid fa-users"></i> Manage Customers</a></li>
+                <li><a href="admin_manage_booking.php"><i class="fa-solid fa-ticket"></i> View Bookings</a></li>
                 <li class="menu-divider">System</li>
-                <li><a href="admin_manage.php" class="active"><i class="fa-solid fa-user-shield"></i> Manage Admins</a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="admin_manage_admin.php" class="active"><i class="fa-solid fa-user-shield"></i> Manage Admins<span class="badge">New</a></li>
+                <li><a href="admin_report.php"><i class="fa-solid fa-file"></i> Reports</a></li>
             </ul>
             <div class="sidebar-footer">
                 <a href="#" onclick="return confirmLogout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>

@@ -2,26 +2,32 @@
 session_start();
 include "db_conn.php";
 
-// 1. SECURITY: If no session exists, kick them back to login.php
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
 }
 
-// 2. FETCH USER DATA: Get the real name from the customer table
 $userID = $_SESSION['id'];
-$fullName = "User"; // Fallback
 
+// Fetch Customer Name for greeting
 $sql = "SELECT custName FROM customer WHERE accountID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
-$result = $stmt->get_result();
+$res = $stmt->get_result();
+$row = $res->fetch_assoc();
+$fullName = $row['custName'] ?? "User";
+$firstName = explode(' ', trim($fullName))[0];
 
-if ($row = $result->fetch_assoc()) {
-    $fullName = $row['custName'];
-    // Extract first name
-    $firstName = explode(' ', trim($fullName))[0];
+// Handle Driver Search
+$drivers = [];
+if (isset($_GET['pickup']) && isset($_GET['dropoff'])) {
+    // In a real app, you might calculate price based on distance here
+    // For now, we fetch all drivers and their vehicle info
+    $driverSql = "SELECT d.*, v.vehicleModel, v.vehiclePlateNum, v.vehicleColor 
+                  FROM driver d 
+                  JOIN vehicle v ON d.driverID = v.driverID";
+    $drivers = $conn->query($driverSql);
 }
 ?>
 
@@ -75,8 +81,6 @@ if ($row = $result->fetch_assoc()) {
                             <strong><?php echo ucfirst($_SESSION['role']); ?></strong>
                         </div>
                         <a href="customer_profile.php"><i class="fa-solid fa-user"></i> My Profile</a>
-                        <a href="#"><i class="fa-solid fa-wallet"></i> Payment Method</a>
-                        <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> Ride History</a>
                         <div class="divider"></div>
                         <a href="#" onclick="confirmLogout()" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
@@ -89,12 +93,17 @@ if ($row = $result->fetch_assoc()) {
         <div class="hero-content">
             <h1>Where to today, <?php echo $firstName; ?>?</h1>
             
-            <div class="search-widget">
+            <form action="search_ride.php" method="GET" class="search-widget">
                 <div class="input-group">
                     <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
                     <div class="input-text">
                         <label>FROM</label>
-                        <input type="text" placeholder="Pickup Location (e.g. UiTM Gate)">
+                        <select name="pickup" class="form-control" required>
+                        <option value="" disabled selected>Select Pickup</option>
+                        <option value="Kolej TDM">Kolej TDM</option>
+                        <option value="Kolej THO">Kolej THO</option>
+                        <option value="Library">Library</option>
+                    </select>
                     </div>
                 </div>
 
@@ -102,20 +111,17 @@ if ($row = $result->fetch_assoc()) {
                     <div class="icon"><i class="fa-solid fa-map-location-dot"></i></div>
                     <div class="input-text">
                         <label>TO</label>
-                        <input type="text" placeholder="Drop-off Location">
+                        <select name="dropoff" class="form-control" required>
+                        <option value="" disabled selected>Select Destination</option>
+                        <option value="Block A">Block A</option>
+                        <option value="Block D">Block D</option>
+                        <option value="Stesen Bas">Stesen Bas</option>
+                    </select>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <div class="icon"><i class="fa-regular fa-calendar"></i></div>
-                    <div class="input-text">
-                        <label>DATE</label>
-                        <input type="date">
-                    </div>
-                </div>
-
-                <button class="search-btn">SEARCH RIDES</button>
-            </div>
+                <button type="submit" class="search-btn">SEARCH RIDES</button>
+            </form>
         </div>
     </header>
 

@@ -82,8 +82,6 @@ if ($row = $result->fetch_assoc()) {
                             <strong><?php echo ucfirst($_SESSION['role']); ?></strong>
                         </div>
                         <a href="customer_profile.php"><i class="fa-solid fa-user"></i> My Profile</a>
-                        <a href="#"><i class="fa-solid fa-wallet"></i> Payment Method</a>
-                        <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> Ride History</a>
                         <div class="divider"></div>
                         <a href="#" onclick="confirmLogout()" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
@@ -118,23 +116,52 @@ if ($row = $result->fetch_assoc()) {
             <div class="section-card">
                 <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Bookings</div>
                 
-                <div class="booking-item">
-                    <div class="trip-info">
-                        <b>Driver: Amier Zhafran</b>
-                        <span>UiTM Machang &rarr; Aeon Mall KB</span>
-                        <span class="trip-date">12 May 2024, 2:30 PM</span>
-                    </div>
-                    <div class="trip-price">RM 25.00</div>
-                </div>
+                <?php
+                // Fetch recent completed bookings for this customer
+                // We LEFT JOIN feedback to check if the user has already rated the trip
+                $recentSql = "SELECT b.*, d.driverName, f.feedbackID 
+                            FROM booking b
+                            JOIN driver d ON b.driverID = d.driverID
+                            LEFT JOIN feedback f ON b.bookingID = f.bookingID
+                            WHERE b.custID = (SELECT custID FROM customer WHERE accountID = ?) 
+                            AND b.bookingStatus = 'Completed'
+                            ORDER BY b.bookingTimestamp DESC LIMIT 5";
+                
+                $stmtR = $conn->prepare($recentSql);
+                $stmtR->bind_param("i", $userID);
+                $stmtR->execute();
+                $recentResult = $stmtR->get_result();
 
-                <div class="booking-item">
-                    <div class="trip-info">
-                        <b>Driver: Muhd Nur Ikhmal</b>
-                        <span>Kolej Tun Razak &rarr; Bandar Machang</span>
-                        <span class="trip-date">10 May 2024, 10:15 AM</span>
+                if ($recentResult->num_rows > 0):
+                    while($row = $recentResult->fetch_assoc()):
+                ?>
+                    <div class="booking-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="trip-info">
+                            <b>Driver: <?php echo htmlspecialchars($row['driverName']); ?></b>
+                            <span><?php echo htmlspecialchars($row['pickupLocation']); ?> &rarr; <?php echo htmlspecialchars($row['dropoffLocation']); ?></span>
+                            <span class="trip-date"><?php echo date('d M Y, h:i A', strtotime($row['bookingTimestamp'])); ?></span>
+                        </div>
+                        
+                        <div style="text-align: right;">
+                            <div class="trip-price" style="margin-bottom: 5px;">RM <?php echo number_format($row['bookingFare'] ?? 0, 2); ?></div>
+                            
+                            <?php if (!$row['feedbackID']): ?>
+                                <a href="feedback.php?bookingID=<?php echo $row['bookingID']; ?>" 
+                                class="book-btn" 
+                                style="font-size: 11px; padding: 5px 10px; background: #FFD700; color: #000; text-decoration: none; border-radius: 5px;">
+                                <i class="fa-solid fa-star"></i> Give Feedback
+                                </a>
+                            <?php else: ?>
+                                <span style="font-size: 11px; color: #02B150;"><i class="fa-solid fa-check-circle"></i> Rated</span>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                    <div class="trip-price">RM 6.00</div>
-                </div>
+                <?php 
+                    endwhile;
+                else:
+                    echo "<p style='color: #888; text-align: center; padding: 15px;'>No completed trips yet.</p>";
+                endif; 
+                ?>
             </div>
         </div>
 
