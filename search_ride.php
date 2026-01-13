@@ -13,7 +13,7 @@ $dropoff = $_GET['dropoff'] ?? 'Unknown';
 // Updated SQL to fetch drivers with their vehicle info and average rating
 $sql = "SELECT d.*, v.vehicleModel, v.vehicleColor, v.vehiclePlateNum, AVG(f.rating) as avgRating
         FROM driver d 
-        LEFT JOIN vehicle v ON d.driverID = v.driverID
+        INNER JOIN vehicle v ON d.driverID = v.driverID
         LEFT JOIN booking b ON d.driverID = b.driverID
         LEFT JOIN feedback f ON b.bookingID = f.bookingID
         WHERE d.driverID NOT IN (SELECT driverID FROM booking WHERE bookingStatus = 'Pending')
