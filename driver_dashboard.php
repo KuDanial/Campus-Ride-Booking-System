@@ -2,6 +2,11 @@
 session_start();
 include "db_conn.php";
 
+// Prevent browser from caching the page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'driver') {
     header("Location: login.php");
     exit();

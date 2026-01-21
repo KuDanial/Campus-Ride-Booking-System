@@ -41,7 +41,7 @@ if (isset($_GET['pickup']) && isset($_GET['dropoff'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrabWeb - Welcome, <?php echo $firstName; ?></title>
+    <title>GrabWeb - Help Centre</title>
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -94,69 +94,87 @@ if (isset($_GET['pickup']) && isset($_GET['dropoff'])) {
 
         </div> </nav>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Where to today, <?php echo $firstName; ?>?</h1>
-            
-            <form action="search_ride.php" method="GET" class="search-widget">
-                <div class="input-group">
-                    <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
-                    <div class="input-text">
-                        <label>FROM</label>
-                        <select name="pickup" class="form-control" required>
-                        <option value="" disabled selected>Select Pickup</option>
-                        <option value="Kolej TDM">Kolej TDM</option>
-                        <option value="Kolej THO">Kolej THO</option>
-                        <option value="Library">Library</option>
-                    </select>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <div class="icon"><i class="fa-solid fa-map-location-dot"></i></div>
-                    <div class="input-text">
-                        <label>TO</label>
-                        <select name="dropoff" class="form-control" required>
-                        <option value="" disabled selected>Select Destination</option>
-                        <option value="Block A">Block A</option>
-                        <option value="Block D">Block D</option>
-                        <option value="Stesen Bas">Stesen Bas</option>
-                    </select>
-                    </div>
-                </div>
-
-                <button type="submit" class="search-btn">SEARCH RIDES</button>
-            </form>
+    <div class="help-hero">
+        <h1>How can we help you?</h1>
+        <div class="help-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search for issues (e.g., payment, lost item)...">
         </div>
-    </header>
+    </div>
 
-    <section class="results-preview">
-        <h2>Recommended for you</h2>
+    <div class="help-container">
         
-        <div class="ride-card">
-            <div class="driver-section">
-                <div class="driver-img"><i class="fa-solid fa-user"></i></div>
-                <div class="driver-info">
-                    <h3>Amier Zhafran</h3>
-                    <span class="rating">★ 4.9</span>
-                    <p class="car-model">Perodua Myvi (Grey)</p>
-                    <p class="plate-num">VAA 1234</p>
-                </div>
+        <div class="help-categories">
+            <div class="category-card">
+                <i class="fa-solid fa-user-shield"></i>
+                <h3>Account Issues</h3>
             </div>
-            <div class="trip-details">
-                <div class="time">10:00 AM</div>
-                <div class="route">UiTM Gate <i class="fa-solid fa-arrow-right-long"></i> Kolej Tun Razak (TR)</div>
-                <div class="amenities">
-                    <span><i class="fa-solid fa-snowflake"></i> AC</span>
-                    <span><i class="fa-solid fa-users"></i> 4 Seats</span>
-                </div>
+            <div class="category-card">
+                <i class="fa-solid fa-car"></i>
+                <h3>Ride & Booking</h3>
             </div>
-            <div class="price-action">
-                <div class="price">RM 8.00</div>
-                <button class="book-btn">Book Now</button>
+            <div class="category-card">
+                <i class="fa-solid fa-credit-card"></i>
+                <h3>Payments</h3>
+            </div>
+            <div class="category-card">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>Safety & Emergency</h3>
             </div>
         </div>
-    </section>
+
+        <section class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="accordion-item">
+                <button class="accordion-btn">
+                    How do I book a ride?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>To book a ride, simply log in, enter your pickup and drop-off locations on the homepage, select your preferred date, and click "Search Rides".</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-btn">
+                    Can I pay with cash?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Yes, we accept both cash payments directly to the driver and online transfers via GrabPay.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-btn">
+                    I left an item in the car. What should I do?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Please go to "Manage Booking" and select the ride in question. Use the "Contact Driver" button to reach out immediately. If that fails, contact our support team.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-btn">
+                    How do I register as a driver?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Go to the Sign Up page, select "Driver" from the role dropdown menu, and fill in your details including your vehicle information.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <div class="contact-support">
+            <h3>Still need help?</h3>
+            <p>Our support team is available 24/7 for students and staff.</p>
+            <button class="btn-primary" style="width: auto; padding: 10px 30px;">Chat with Support</button>
+        </div>
+
+    </div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -189,19 +207,19 @@ if (isset($_GET['pickup']) && isset($_GET['dropoff'])) {
                 
                 <p style="margin-top: 10px; color: #aaa;">
                     <b style="color:#02B150">Hotline:</b> <br>
-                    +60 16-262 4834 / +60 11-6551 3006
+                    +60 13-970 6363 / +60 18-264 6363
                 </p>
 
                 <p style="margin-top: 10px; color: #aaa;">
                     <b style="color:#02B150">Email:</b> <br>
-                    support@grab.uitm.edu.my
+                    support@uitm.edu.my
                 </p>
             </div>
-
+            
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <a href="#">Home</a>
-                <a href="login.html">Login / Sign Up</a>
+                <a href="login.php">Login / Sign Up</a>
                 <a href="#">Help Center</a>
             </div>
             <div class="footer-section">
@@ -251,5 +269,4 @@ if (isset($_GET['pickup']) && isset($_GET['dropoff'])) {
     </script>
 
 </body>
-
 </html>

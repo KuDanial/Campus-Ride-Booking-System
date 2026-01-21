@@ -2,6 +2,11 @@
 session_start();
 include "db_conn.php";
 
+// Prevent browser from caching the page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 // 1. SECURITY: If no session exists, kick them back to login.php
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");
@@ -66,8 +71,8 @@ if ($row = $result->fetch_assoc()) {
             </div>
             
             <div class="menu">
-                <a href="help.html">Help</a>
-                <a href="#" onclick="checkLogin()">Manage Booking</a>
+                <a href="customer_help.php">Help</a>
+                <a href="customer_booking.php" onclick="checkLogin()">Manage Booking</a>
                 
                 <div class="dropdown">
                     <button class="dropbtn" onclick="toggleDropdown()">
@@ -101,10 +106,10 @@ if ($row = $result->fetch_assoc()) {
                         <p><i class="fa-solid fa-phone"></i> <?php echo $phone; ?></p>
                     </div>
                 </div>
-                <button class="edit-profile-btn" onclick="window.location.href='customer_edit.php'">
-                    <i class="fa-solid fa-user-pen"></i> Edit Profile
-                </button>
-            </div>
+                    <button class="edit-profile-btn" onclick="window.location.href='customer_edit.php'" style="width: 10%;">
+                        <i class="fa-solid fa-user-pen"></i> Edit Profile
+                    </button>
+                </div>
 
             <div class="section-card">
                 <div class="section-title"><i class="fa-solid fa-house-user"></i> Current Address</div>

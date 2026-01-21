@@ -7,15 +7,24 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-// 1. SECURITY: Ensure user is logged in
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
 }
 
 $userID = $_SESSION['id'];
-$fullName = "User";
-$success_msg = "";
+
+// 1. Get Customer ID first
+$stmt = $conn->prepare("SELECT custID FROM customer WHERE accountID = ?");
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$custID = $stmt->get_result()->fetch_assoc()['custID'];
+
+$userID = $_SESSION['id'];
+$fullName = "User"; // Fallback
+$email = "Not Set";
+$phone = "Not Set";
+$address = "Not Set";
 
 $sql = "SELECT custName, custEmail, custPhone, custAddress FROM customer WHERE accountID = ?";
 $stmt = $conn->prepare($sql);
@@ -31,52 +40,43 @@ if ($row = $result->fetch_assoc()) {
     // Extract first name for the "Where to today, Danial?" part
     $firstName = explode(' ', trim($fullName))[0];
 }
-
-// 2. UPDATE LOGIC: If form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $newName = $_POST['fullName'];
-    $newEmail = $_POST['email'];
-    $newPhone = $_POST['phone'];
-    $newAddress = $_POST['address'];
-
-    $updateSql = "UPDATE customer SET custName = ?, custEmail = ?, custPhone = ?, custAddress = ? WHERE accountID = ?";
-    $stmt = $conn->prepare($updateSql);
-    $stmt->bind_param("ssssi", $newName, $newEmail, $newPhone, $newAddress, $userID);
-
-    if ($stmt->execute()) {
-        $success_msg = "Changes Saved Successfully!";
-        // Refresh session if name changed
-        $_SESSION['user_name'] = $newName; 
+// 2. Handle Cancellation Request
+if (isset($_POST['cancel_booking'])) {
+    $bookingID = $_POST['bookingID'];
+    // Update booking status to Cancelled
+    $updateSql = "UPDATE booking SET bookingStatus = 'Cancelled' WHERE bookingID = ? AND custID = ?";
+    $updateStmt = $conn->prepare($updateSql);
+    $updateStmt->bind_param("ii", $bookingID, $custID);
+    
+    if ($updateStmt->execute()) {
+        $msg = "Booking cancelled successfully.";
     }
 }
 
-// 3. FETCH DATA: Get current info to pre-fill the form
-$sql = "SELECT * FROM customer WHERE accountID = ?";
+// 3. Fetch Active Bookings (Pending or Confirmed)
+$sql = "SELECT b.*, d.driverName, d.driverPhone, v.vehicleModel, v.vehiclePlateNum 
+        FROM booking b
+        JOIN driver d ON b.driverID = d.driverID
+        JOIN vehicle v ON d.driverID = v.driverID
+        WHERE b.custID = ? AND b.bookingStatus IN ('Pending', 'Confirmed')
+        ORDER BY b.bookingTimestamp DESC";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userID);
+$stmt->bind_param("i", $custID);
 $stmt->execute();
 $result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
-// Fallbacks if data is empty
-$fullName = $user['custName'] ?? "";
-$email = $user['custEmail'] ?? "";
-$phone = $user['custPhone'] ?? "";
-$address = $user['custAddress'] ?? "";
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrabWeb - Edit Profile</title>
+    <title>Manage Bookings - GrabWeb</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <nav class="navbar">
+<nav class="navbar">
         <div class="nav-container">
             
             <div class="logo">
@@ -114,8 +114,6 @@ $address = $user['custAddress'] ?? "";
                             <strong><?php echo ucfirst($_SESSION['role']); ?></strong>
                         </div>
                         <a href="customer_profile.php"><i class="fa-solid fa-user"></i> My Profile</a>
-                        <a href="#"><i class="fa-solid fa-wallet"></i> Payment Method</a>
-                        <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> Ride History</a>
                         <div class="divider"></div>
                         <a href="#" onclick="confirmLogout()" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
@@ -124,50 +122,52 @@ $address = $user['custAddress'] ?? "";
 
         </div> </nav>
 
-    <div class="edit-wrapper">
-        <div class="edit-card">
-            <?php if ($success_msg): ?>
-                <div class="success-alert"><?php echo $success_msg; ?></div>
-            <?php endif; ?>
+<section class="results-preview" style="padding-top: 40px; min-height: 80vh;">
+    <h2>Your Active Bookings</h2>
+    
+    <?php if (isset($msg)) echo "<p style='color: green; text-align:center;'>$msg</p>"; ?>
 
-            <div style="text-align: center; margin-bottom: 30px;">
-                <div class="profile-upload-area">
-                    <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($fullName); ?>&background=02B150&color=fff" class="profile-preview">
-                    <div class="camera-icon"><i class="fa-solid fa-camera"></i></div>
+    <?php if ($result->num_rows > 0): ?>
+        <?php while($row = $result->fetch_assoc()): ?>
+            <div class="ride-card">
+                <div class="driver-section">
+                    <div class="driver-img">
+                        <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($row['driverName']); ?>&background=02B150&color=fff" style="width:100%; border-radius:50%;">
+                    </div>
+                    <div class="driver-info">
+                        <h3><?php echo htmlspecialchars($row['driverName']); ?></h3>
+                        <p>Status: <strong style="color: orange;"><?php echo $row['bookingStatus']; ?></strong></p>
+                        <p class="car-model"><?php echo htmlspecialchars($row['vehicleModel']); ?> (<?php echo htmlspecialchars($row['vehiclePlateNum']); ?>)</p>
+                    </div>
                 </div>
-                <h2 style="margin:0; color: var(--text-dark);">Edit Personal Data</h2>
+
+                <div class="trip-details">
+                    <div class="route">
+                        <?php echo htmlspecialchars($row['pickupLocation']); ?> 
+                        <i class="fa-solid fa-arrow-right-long"></i> 
+                        <?php echo htmlspecialchars($row['dropoffLocation']); ?>
+                    </div>
+                    <div class="time"><i class="fa-regular fa-clock"></i> Booked on: <?php echo $row['bookingTimestamp']; ?></div>
+                </div>
+
+                <div class="price-action">
+                    <div class="price">RM <?php echo number_format($row['bookingFare'], 2); ?></div>
+                    <form method="POST" onsubmit="return confirm('Are you sure you want to cancel this ride?');">
+                        <input type="hidden" name="bookingID" value="<?php echo $row['bookingID']; ?>">
+                        <button type="submit" name="cancel_booking" class="book-btn" style="background-color: #e74c3c;">Cancel Ride</button>
+                    </form>
+                </div>
             </div>
-
-            <form method="POST" action="customer_edit.php">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" name="fullName" class="form-control" value="<?php echo htmlspecialchars($fullName); ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" name="phone" class="form-control" value="<?php echo htmlspecialchars($phone); ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Current Address</label>
-                    <textarea name="address" class="form-control" style="height: 100px; resize: none;" required><?php echo htmlspecialchars($address); ?></textarea>
-                </div>
-
-                <div class="btn-container">
-                    <button type="button" class="btn-primary" style="background: #eee; color: #333;" onclick="window.location.href='customer_profile.php'">Cancel</button>
-                    <button type="submit" class="btn-primary">Confirm Changes</button>
-                </div>
-            </form>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <div style="text-align: center; margin-top: 50px; color: #666;">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 10px;"></i>
+            <p>You have no active bookings.</p>
+            <a href="customer_dashboard.php" class="book-btn" style="display:inline-block; margin-top:15px; text-decoration:none;">Book a Ride Now</a>
         </div>
-    </div>
-
-    <script>
+    <?php endif; ?>
+</section>
+<script>
         /* 1. Toggle the Dropdown Menu */
         function toggleDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
@@ -196,16 +196,6 @@ $address = $user['custAddress'] ?? "";
                 // Point this to a logout.php file (we should create this)
                 window.location.href = "logout.php"; 
             }
-        }
-
-        function goBack() {
-            window.location.href = 'customer_profile.php';
-        }
-
-        function confirmSave() {
-            // In a real app, you would save data to a database here
-            alert("Changes Saved Successfully!");
-            window.location.href = 'customer_profile.php';
         }
     </script>
 </body>
