@@ -83,6 +83,8 @@ $displayRating = $ratingResult['avgRating'] ? number_format($ratingResult['avgRa
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto" loop></audio>
+    <input type="hidden" id="lastBookingCount" value="<?php echo $pendingJobs->num_rows; ?>">
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
@@ -197,6 +199,17 @@ $displayRating = $ratingResult['avgRating'] ? number_format($ratingResult['avgRa
         </div>
     </div>
 
+    <div id="bookingModal" style="display:none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+        <div style="background-color: #fff; margin: 15% auto; padding: 30px; border-radius: 15px; width: 80%; max-width: 400px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-top: 10px solid #02B150;">
+            <i class="fa-solid fa-bell" style="font-size: 3rem; color: #02B150; margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 10px;">New Booking!</h2>
+            <p style="color: #666; margin-bottom: 25px;">You have received a new trip request. Please check your job list.</p>
+            <button onclick="stopAlarmAndClose()" style="background-color: #02B150; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;">
+                Acknowledge & Stop Sound
+            </button>
+        </div>
+    </div>  
+
     <script>
         /* 1. Toggle the Dropdown Menu */
         function toggleDropdown() {
@@ -227,6 +240,52 @@ $displayRating = $ratingResult['avgRating'] ? number_format($ratingResult['avgRa
                 window.location.href = "logout.php"; 
             }
         }
-        </script>
+
+        function checkNewBookings() {
+        const lastCountInput = document.getElementById('lastBookingCount');
+        const lastCount = parseInt(lastCountInput.value);
+
+        // Call our small PHP file
+        fetch('check_new_booking.php')
+            .then(response => response.text())
+            .then(currentCount => {
+                currentCount = parseInt(currentCount);
+
+                // If current is more than last seen, play sound
+                if (currentCount > lastCount) {
+                // 1. Play looping sound
+                const alarm = document.getElementById('notificationSound');
+                alarm.play();
+                
+                // 2. Show the Modal Pop-up
+                document.getElementById('bookingModal').style.display = 'block';
+
+                // 3. Show Desktop Notification (Pop-up outside browser)
+                if (Notification.permission === "granted") {
+                    new Notification("GrabWeb: New Booking!", {
+                        body: "You have a new pending job request.",
+                        icon: "images/grab-logo-black-and-white.png"
+                    });
+                }
+                
+                lastCountInput.value = currentCount;
+            }
+            });
+        }   
+        
+        function stopAlarmAndClose() {
+            const alarm = document.getElementById('notificationSound');
+            alarm.pause();
+            alarm.currentTime = 0; // Reset sound
+            
+            // Hide the modal
+            document.getElementById('bookingModal').style.display = 'none';
+            
+            // Refresh the page to show the new booking in the list
+            window.location.reload();
+        }
+        // Run every 5 seconds
+        setInterval(checkNewBookings, 5000);
+    </script>
 </body>
 </html>
